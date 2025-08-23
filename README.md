@@ -61,13 +61,8 @@
 **Type**: 2D Array
 **Dimension**: Array of arrays (outer: rods, inner: disk stacks)
 **Purpose**: Represents the three rods and which disks are on each rod
+<img width="456" height="168" alt="Screenshot 2025-08-23 at 10 02 00 a m" src="https://github.com/user-attachments/assets/4d787a96-6175-45a2-8849-0b5892c3b056" />
 
 `
- Rod A    Rod B    Rod C
-     [0]      [1]      [2]
-    ┌───┐    ┌───┐    ┌───┐
-[2] │ 1 │    │   │    │   │  ← Top disk (last in array)
-[1] │ 2 │    │   │    │   │  ← Middle disk  
-[0] │ 3 │    │   │    │   │  ← Bottom disk (first in array)
-    └───┘    └───┘    └───┘
+
  `
