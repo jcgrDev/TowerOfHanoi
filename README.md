@@ -50,3 +50,23 @@
   - `moveDisk()`: Execute disk movement with validation
   - `autoSolve()`: Animate the complete solution
 - **Conforms to**: `ObservableObject`
+
+### Detailed Property Analysis
+
+`@Published var disks: [Disk] = []`
+ **Type**: Single array containing all disk objects
+ **Purpose**: Master collection of all disks in the game
+
+ `@Published var rods: [[Disk]] = [[],[],[]]`
+**Type**: 2D Array
+**Dimension**: Array of arrays (outer: rods, inner: disk stacks)
+**Purpose**: Represents the three rods and which disks are on each rod
+
+ Rod A    Rod B    Rod C
+     [0]      [1]      [2]
+    ┌───┐    ┌───┐    ┌───┐
+[2] │ 1 │    │   │    │   │  ← Top disk (last in array)
+[1] │ 2 │    │   │    │   │  ← Middle disk  
+[0] │ 3 │    │   │    │   │  ← Bottom disk (first in array)
+    └───┘    └───┘    └───┘
+ ``
