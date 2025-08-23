@@ -62,6 +62,7 @@
 **Dimension**: Array of arrays (outer: rods, inner: disk stacks)
 **Purpose**: Represents the three rods and which disks are on each rod
 
+`
  Rod A    Rod B    Rod C
      [0]      [1]      [2]
     ┌───┐    ┌───┐    ┌───┐
@@ -69,4 +70,4 @@
 [1] │ 2 │    │   │    │   │  ← Middle disk  
 [0] │ 3 │    │   │    │   │  ← Bottom disk (first in array)
     └───┘    └───┘    └───┘
- ``
+ `
