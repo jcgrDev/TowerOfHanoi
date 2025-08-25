@@ -11,4 +11,10 @@ struct HanoiSolution: Codable {
     let numberOfDisks: Int
     let moves: [HanoiMove]
     let totalMoves: Int
+    
+    init(numberOfDisks: Int, moves: [HanoiMove]) {
+        self.numberOfDisks = numberOfDisks
+        self.moves = moves
+        self.totalMoves = moves.count
+    }
 }
