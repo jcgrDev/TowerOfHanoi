@@ -16,9 +16,19 @@ class HanoiGame: ObservableObject {
     @Published var gameCompleted: Bool = false
     
     private let rodNames = ["A", "B", "C"]
+    private let solver: HanoiGameLogic
     
-    init() {
+    init(solver: HanoiGameLogic = HanoiSolver()) {
+        self.solver = solver
         setupGame()
+        generateSolution()
+    }
+    
+    init(numberOfDisks: Int, solver: HanoiGameLogic = HanoiSolver()) {
+        self.numberOfDisks = numberOfDisks
+        self.solver = solver
+        setupGame()
+        generateSolution()
     }
     
     func setupGame() {
@@ -34,4 +44,7 @@ class HanoiGame: ObservableObject {
         }
     }
     
+    func generateSolution() {
+        solution = solver.generateSolution(for: numberOfDisks)
+    }
 }
