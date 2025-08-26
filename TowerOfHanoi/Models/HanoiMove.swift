@@ -18,7 +18,7 @@ struct HanoiMove: Codable, Identifiable {
         self.from = from
         self.to = to
         self.disk = disk
-        self.description = "Move disk \(disk) from rod \(from) to rod\(to)"
+        self.description = "Move disk \(disk) from rod \(from) to rod \(to)"
     }
     
     private enum CodingKeys: String, CodingKey {
