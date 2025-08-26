@@ -52,6 +52,19 @@
   - `autoSolve()`: Animate the complete solution
 - **Conforms to**: `ObservableObject`
 
+### Detailed Property Analysis
+
+`@Published var disks: [Disk] = []`
+ **Type**: Single array containing all disk objects
+ **Purpose**: Master collection of all disks in the game
+
+ `@Published var rods: [[Disk]] = [[],[],[]]`
+**Type**: 2D Array
+**Dimension**: Array of arrays (outer: rods, inner: disk stacks)
+**Purpose**: Represents the three rods and which disks are on each rod
+<img width="456" height="168" alt="Screenshot 2025-08-23 at 10 02 00 a m" src="https://github.com/user-attachments/assets/4d787a96-6175-45a2-8849-0b5892c3b056" />
+
+
 #### `GameState`
 - **Purpose**: Immutable representation of game state for logic validation and testing.
 
