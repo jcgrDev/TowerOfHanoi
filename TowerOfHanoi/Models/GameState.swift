@@ -43,8 +43,11 @@ struct GameState: Equatable {
         
         // Check each rod for valid stacking (larger disks below smaller ones)
         for rod in rods {
-            for i in 0..<rod.count-1 {
-                if rod[i] <= rod[i+1] {
+            // Skip rods with 0 or 1 disk - They're always valid
+            guard rod.count > 1 else { continue }
+            
+            for i in 0..<rod.count - 1 {
+                if rod[i] <= rod[i + 1] {
                     return false
                 }
             }

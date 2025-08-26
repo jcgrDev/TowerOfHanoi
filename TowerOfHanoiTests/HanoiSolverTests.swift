@@ -69,4 +69,29 @@ struct HanoiSolverTests {
             #expect(actualMove.disk == expectedMove.2, "Move \(index + 1) disk incorrect")
         }
     }
+    
+    @Test("Valid moves are correctly identified")
+    func testValidMoves() async throws {
+        let solver = HanoiSolver()
+        let gameState = GameState(rods: [[3, 2, 1], [], []], numberOfDisks: 3)
+        
+        // Valid moves - can move top disk to empty rods
+        #expect(solver.isValidMove(from: "A", to: "B", gameState: gameState))
+        #expect(solver.isValidMove(from: "A", to: "C", gameState: gameState))
+    }
+    
+    @Test("Valid moves are applied correctly")
+    func testApplyValidMove() async throws {
+        let solver = HanoiSolver()
+        let initialState = GameState(rods: [[3, 2, 1], [], []], numberOfDisks: 3)
+        let move = HanoiMove(from: "A", to: "C", disk: 1)
+        
+        let newState = try #require(solver.applyMove(move, to: initialState))
+        
+        #expect(newState.rods[0] == [3, 2], "Disk 1 should be removed from rod A")
+        #expect(newState.rods[1] == [], "Rod B should remain unchanged")
+        #expect(newState.rods[2] == [1], "Disk 1 should be added to rod C")
+        #expect(newState.currentStep == 1, "Step should be incremented")
+        #expect(newState.isValidState(), "New state should be valid")
+    }
 }
