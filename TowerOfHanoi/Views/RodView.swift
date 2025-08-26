@@ -15,15 +15,17 @@ struct RodView: View {
         let rodWidth = geometry.size.width / 3
         let rodx = rodWidth * (CGFloat(rodIndex) + 0.5)
         
-        VStack {
+        ZStack {
             // Rod
             Rectangle()
                 .fill(Color.brown)
                 .frame(width: 8, height: geometry.size.height * 0.8)
                 .position(x: rodx, y: geometry.size.height * 0.5)
+            
             Text(["A", "B", "C"][rodIndex])
                 .font(.title2)
                 .fontWeight(.bold)
+                .foregroundColor(.black)
                 .position(x: rodx, y: geometry.size.height - 40)
         }
     }
