@@ -28,7 +28,46 @@ struct GameView: View {
                 ForEach(0..<3) { rodIndex in
                     RodView(rodIndex: rodIndex, geometry: geometry)
                 }
+                
+                // Disks
+                ForEach(game.disks) { disk in
+                    DiskView(
+                        disk: disk,
+                        game: game,
+                        geometry: geometry,
+                        isDragged: draggedDisk?.id == disk.id,
+                        dragOffset: dragOffset)
+                    .gesture(
+                        DragGesture()
+                            .onChanged { value in
+                                if draggedDisk == nil && game.rods[disk.rod].last?.id == disk.id {
+                                    draggedDisk = disk
+                                }
+                                if draggedDisk?.id == disk.id {
+                                    dragOffset = value.translation
+                                }
+                            }
+                            .onEnded { value in
+                                if let draggedDisk = draggedDisk, draggedDisk.id == disk.id {
+                                    handleDrop(disk: draggedDisk, location: value.location, geometry: geometry)
+                                }
+                                
+                                self.draggedDisk = nil
+                                dragOffset = .zero
+                            }
+                    )
+                }
+                
             }
+        }
+    }
+    
+    private func handleDrop(disk: Disk, location: CGPoint, geometry: GeometryProxy) {
+        let rodWidth = geometry.size.width / 3
+        let targetRod = min(2, max(0, Int(location.x / rodWidth)))
+        
+        withAnimation(.easeInOut(duration: 0.3)) {
+            _ = game.moveDisk(from: disk.rod, to: targetRod)
         }
     }
 }

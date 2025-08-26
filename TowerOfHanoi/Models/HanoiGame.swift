@@ -47,4 +47,31 @@ class HanoiGame: ObservableObject {
     func generateSolution() {
         solution = solver.generateSolution(for: numberOfDisks)
     }
+    
+    func canMoveDisk(from fromRod: Int, to toRod: Int) -> Bool {
+        guard !rods[fromRod].isEmpty else { return false }
+        guard fromRod != toRod else { return false }
+        
+        let topDisk = rods[fromRod].last!
+        
+        if rods[toRod].isEmpty {
+            return true
+        }
+        
+        let destinationTopDisk = rods[toRod].last!
+        return topDisk.size < destinationTopDisk.size
+    }
+    
+    func moveDisk(from fromRod: Int, to toRod: Int) -> Bool {
+        guard canMoveDisk(from: fromRod, to: toRod) else { return false }
+        
+        let disk = rods[fromRod].removeLast()
+        disk.rod = toRod
+        rods[toRod].append(disk)
+        return true
+    }
+    
+    private func checkGameCompletino(){
+        gameCompleted = rods[2].count == numberOfDisks
+    }
 }
