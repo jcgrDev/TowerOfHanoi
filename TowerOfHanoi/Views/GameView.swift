@@ -58,6 +58,21 @@ struct GameView: View {
                     )
                 }
                 
+                if game.gameCompleted {
+                    VStack {
+                        Text("🎉 Congratulations! 🎉")
+                            .font(.largeTitle)
+                            .fontWeight(.bold)
+                            .foregroundColor(.green)
+                        Text("Puzzle Solved!")
+                            .font(.title2)
+                            .foregroundColor(.green)
+                    }
+                    .padding()
+                    .background(Color.white.opacity(0.9))
+                    .cornerRadius(15)
+                    .shadow(radius: 10)
+                }
             }
         }
     }

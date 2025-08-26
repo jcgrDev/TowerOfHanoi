@@ -37,7 +37,7 @@ class HanoiGame: ObservableObject {
         currentStep = 0
         gameCompleted = false
         
-        for i in stride(from: numberOfDisks, to: 1, by: -1) {
+        for i in stride(from: numberOfDisks, through: 1, by: -1) {
             let disk = Disk(size: i, rod: 0)
             disks.append(disk)
             rods[0].append(disk)
@@ -68,10 +68,15 @@ class HanoiGame: ObservableObject {
         let disk = rods[fromRod].removeLast()
         disk.rod = toRod
         rods[toRod].append(disk)
+        
+        checkGameCompletion()
         return true
     }
     
-    private func checkGameCompletino(){
-        gameCompleted = rods[2].count == numberOfDisks
+    private func checkGameCompletion(){
+        var a = rods[2].count == numberOfDisks
+        print("rods count: \(rods[2].count)")
+        print("numberOFDisks: \(numberOfDisks)")
+        gameCompleted = a
     }
 }
