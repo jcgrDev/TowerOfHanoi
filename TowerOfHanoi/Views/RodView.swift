@@ -20,13 +20,13 @@ struct RodView: View {
             Rectangle()
                 .fill(Color.brown)
                 .frame(width: 8, height: geometry.size.height * 0.8)
-                .position(x: rodx, y: geometry.size.height * 0.5)
+                .position(x: rodx, y: geometry.size.height * 0.6)
             
             Text(["A", "B", "C"][rodIndex])
-                .font(.title2)
+                .font(.title)
                 .fontWeight(.bold)
                 .foregroundColor(.black)
-                .position(x: rodx, y: geometry.size.height - 40)
+                .position(x: rodx, y: geometry.size.height - 10)
         }
     }
 }
