@@ -57,8 +57,8 @@ struct GameState: Equatable {
     }
     
     func canMoveDisk(from: Int, to: Int) -> Bool {
-        guard from != to,
-              from >= 0, from < rods.count,
+        guard from != to,   // Different rods
+              from >= 0, from < rods.count, // Valid indices
               to >= 0, to < rods.count else {
             return false
         }
@@ -66,12 +66,12 @@ struct GameState: Equatable {
         let diskToMove = rods[from].last!
         
         if rods[to].isEmpty {
-            return true
+            return true // Can always move to empty rod
         }
         
         let topDiskAtDestination = rods[to].last!
         
-        return diskToMove < topDiskAtDestination
+        return diskToMove < topDiskAtDestination // Smaller on larger only
     }
     
     func applyMove(_ move: HanoiMove) -> GameState? {
@@ -87,8 +87,5 @@ struct GameState: Equatable {
         newRods[toIndex].append(disk)
         
         return GameState(rods: newRods, numberOfDisks: numberOfDisks, currentStep: currentStep + 1)
-        
     }
-    
-    
 }
