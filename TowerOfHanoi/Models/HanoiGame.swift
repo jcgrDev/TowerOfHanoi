@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 class HanoiGame: ObservableObject {
     @Published var disks: [Disk] = []
@@ -14,6 +15,7 @@ class HanoiGame: ObservableObject {
     @Published var currentStep: Int = 0
     @Published var solution: HanoiSolution?
     @Published var gameCompleted: Bool = false
+    @Published var isAnimating: Bool = false
     
     private let rodNames = ["A", "B", "C"]
     private let solver: HanoiGameLogic
@@ -74,9 +76,52 @@ class HanoiGame: ObservableObject {
     }
     
     private func checkGameCompletion(){
-        var a = rods[2].count == numberOfDisks
-        print("rods count: \(rods[2].count)")
-        print("numberOFDisks: \(numberOfDisks)")
-        gameCompleted = a
+        gameCompleted = rods[2].count == numberOfDisks
+    }
+    
+    func resetGame() {
+        setupGame()
+        generateSolution()
+    }
+    
+    func updateNumberOfDisks(_ count: Int) {
+        numberOfDisks = max(1, min(8, count))
+        resetGame()
+    }
+    
+    
+    // AutoSolve
+    func autoSolve() {
+        guard !isAnimating else { return } // AutoSolve in progress
+        
+        if solution == nil {
+            generateSolution()
+        }
+        
+        isAnimating = true
+        currentStep = 0
+        
+        executeNextMove()
+    }
+    
+    private func executeNextMove() {
+        guard let solution = solution, currentStep < solution.moves.count else {
+            isAnimating = false
+            return
+        }
+        
+        let move = solution.moves[currentStep]
+        let fromRod = rodNames.firstIndex(of: move.from)!
+        let toRod = rodNames.firstIndex(of: move.to)!
+        
+        withAnimation(.easeInOut(duration: 0.8)) {
+                    _ = moveDisk(from: fromRod, to: toRod)
+                }
+        
+        currentStep += 1
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            self.executeNextMove()
+        }
     }
 }
