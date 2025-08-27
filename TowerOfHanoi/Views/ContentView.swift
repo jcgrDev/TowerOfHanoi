@@ -14,8 +14,16 @@ struct ContentView: View {
             HStack {
                 GameView(game: game)
                     .frame(width: geometry.size.width * 0.7)
+                
+                // Control Panel
+                ControlPanelView(game: game)
+                    .frame(width: geometry.size.width * 0.3)
+                    .background(Color.gray.opacity(0.1))
             }
         }
+        .navigationBarHidden(true)
+        .statusBarHidden()
+        .preferredColorScheme(.light)
     }
 }
 
