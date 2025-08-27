@@ -56,6 +56,44 @@ struct ControlPanelView: View {
                 .buttonStyle(SecondaryButtonStyle())
                 .disabled(game.isAnimating)
             }
+            
+            Button(game.showingSolution ? "Hide Solution" : "Show Solution") {
+                game.showingSolution.toggle()
+            }
+            .buttonStyle(SecondaryButtonStyle())
+            
+            if game.showingSolution, let solution = game.solution {
+                ScrollView {
+                    LazyVStack(alignment: .leading , spacing: 5) {
+                        Text("Solution Steps:")
+                            .font(.headline)
+                            .padding(.bottom, 5)
+                        
+                        ForEach(Array(solution.moves.enumerated()), id: \.element.id) { index, move in
+                            HStack(alignment: .top, spacing: 8) {
+                                Text("\(index + 1).")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                                    .frame(width: 25, alignment: .leading)
+                                
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(move.description)
+                                        .font(.caption)
+                                        .foregroundColor(index < game.currentStep ? .green : .primary)
+                                        .fontWeight(index == game.currentStep && game.isAnimating ? .bold : .regular)
+                                    
+                                    if index == game.currentStep && game.isAnimating {
+                                        Text("<- Current Step")
+                                            .font(.caption2)
+                                            .foregroundColor(.blue)
+                                            .italic()
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

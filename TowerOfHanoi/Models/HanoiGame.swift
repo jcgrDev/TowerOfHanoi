@@ -16,6 +16,7 @@ class HanoiGame: ObservableObject {
     @Published var solution: HanoiSolution?
     @Published var gameCompleted: Bool = false
     @Published var isAnimating: Bool = false
+    @Published var showingSolution: Bool = false
     
     private let rodNames = ["A", "B", "C"]
     private let solver: HanoiGameLogic
