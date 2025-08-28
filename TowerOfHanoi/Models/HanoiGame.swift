@@ -17,6 +17,8 @@ class HanoiGame: ObservableObject {
     @Published var gameCompleted: Bool = false
     @Published var isAnimating: Bool = false
     @Published var showingSolution: Bool = false
+    @Published var cloudService =  FirebaseHanoiService()
+    @Published var isLoadingCloudSolution = false
     
     private let rodNames = ["A", "B", "C"]
     private let solver: HanoiGameLogic
@@ -32,6 +34,23 @@ class HanoiGame: ObservableObject {
         self.solver = solver
         setupGame()
         generateSolution()
+    }
+    
+    @MainActor
+    func generateCloudSolution() async {
+        isLoadingCloudSolution = true
+        
+        do {
+            let response = try await cloudService.getSolution(numberOfDisks: numberOfDisks)
+            solution = response.solution
+    
+            print("Solution loaded from cloud")
+        } catch {
+            print("❌ Cloud solution failed: \(error)")
+            generateSolution() // Fallback to local
+        }
+        
+        isLoadingCloudSolution = false
     }
     
     func setupGame() {
