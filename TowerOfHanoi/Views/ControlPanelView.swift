@@ -17,6 +17,40 @@ struct ControlPanelView: View {
                 .fontWeight(.bold)
                 .padding(.top)
             
+            // Cloud integration control
+            VStack {
+                Text("Cloud Features")
+                    .font(.headline)
+                
+                HStack {
+                    Image(systemName: game.cloudService.isConnectd ? "cloud.fill" : "desktopcomputer")
+                        .foregroundColor(game.cloudService.isConnectd ? .green : .red)
+                    
+                    Text(game.cloudService.isConnectd ? "Connected" : "Offline")
+                }
+                
+                Toggle("Prefer Cloud Solution", isOn: $game.preferCloudSolution)
+                    .onChange(of: game.preferCloudSolution) {
+                        // Regenerate solution when preference changes
+                        Task {
+                            if game.preferCloudSolution && !game.cloudService.hasBeenTested {
+                                await game.cloudService.testConnection()
+                            }
+                            await game.refreshSolution()
+                        }
+                    }
+                
+                if game.isLoadingCloudSolution {
+                    HStack {
+                        ProgressView()
+                            .scaleEffect(0.8)
+                        Text("Loading cloud solution ...")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                }
+            }
+            
             // Number of disks selector
             VStack {
                 Text("Number of Disks: \(game.numberOfDisks)")

@@ -19,6 +19,7 @@ class HanoiGame: ObservableObject {
     @Published var showingSolution: Bool = false
     @Published var cloudService =  FirebaseHanoiService()
     @Published var isLoadingCloudSolution = false
+    @Published var preferCloudSolution: Bool = false
     
     private let rodNames = ["A", "B", "C"]
     private let solver: HanoiGameLogic
@@ -26,31 +27,18 @@ class HanoiGame: ObservableObject {
     init(solver: HanoiGameLogic = HanoiSolver()) {
         self.solver = solver
         setupGame()
-        generateSolution()
+        Task {
+            await generateSolution()
+        }
     }
     
     init(numberOfDisks: Int, solver: HanoiGameLogic = HanoiSolver()) {
         self.numberOfDisks = numberOfDisks
         self.solver = solver
         setupGame()
-        generateSolution()
-    }
-    
-    @MainActor
-    func generateCloudSolution() async {
-        isLoadingCloudSolution = true
-        
-        do {
-            let response = try await cloudService.getSolution(numberOfDisks: numberOfDisks)
-            solution = response.solution
-    
-            print("Solution loaded from cloud")
-        } catch {
-            print("❌ Cloud solution failed: \(error)")
-            generateSolution() // Fallback to local
+        Task {
+            await generateSolution()
         }
-        
-        isLoadingCloudSolution = false
     }
     
     func setupGame() {
@@ -66,8 +54,44 @@ class HanoiGame: ObservableObject {
         }
     }
     
-    func generateSolution() {
-        solution = solver.generateSolution(for: numberOfDisks)
+    @MainActor
+    func generateSolution(preferCloud: Bool = false) async {
+        if preferCloudSolution {
+            if !cloudService.hasBeenTested {
+                await cloudService.testConnection()
+            }
+            
+            if cloudService.isConnectd {
+                await generateCloudSolution()
+            } else {
+                print("⚠️ Cloud preferred but not connected, using local solution")
+                generateLocalSolution()
+            }
+        } else {
+            generateLocalSolution()
+        }
+    }
+    
+    @MainActor
+    func generateCloudSolution() async {
+        isLoadingCloudSolution = true
+        
+        do {
+            let response = try await cloudService.getSolution(numberOfDisks: numberOfDisks)
+            solution = response.solution
+            
+            print("Solution loaded from cloud")
+        } catch {
+            print("❌ Cloud solution failed: \(error)")
+            generateLocalSolution() // Fallback to local
+        }
+        
+        isLoadingCloudSolution = false
+    }
+    
+    @MainActor
+    func refreshSolution() async {
+        await generateSolution()
     }
     
     func canMoveDisk(from fromRod: Int, to toRod: Int) -> Bool {
@@ -99,9 +123,15 @@ class HanoiGame: ObservableObject {
         gameCompleted = rods[2].count == numberOfDisks
     }
     
+    private func generateLocalSolution() {
+        solution = solver.generateSolution(for: numberOfDisks)
+    }
+    
     func resetGame() {
         setupGame()
-        generateSolution()
+        Task {
+            await generateSolution()
+        }
     }
     
     func updateNumberOfDisks(_ count: Int) {
@@ -115,12 +145,18 @@ class HanoiGame: ObservableObject {
         guard !isAnimating else { return } // AutoSolve in progress
         
         if solution == nil {
-            generateSolution()
+            Task {
+                await generateSolution()
+                executeAutoSolve()
+            }
+        } else {
+            executeNextMove()
         }
-        
+    }
+    
+    private func executeAutoSolve() {
         isAnimating = true
         currentStep = 0
-        
         executeNextMove()
     }
     
@@ -135,8 +171,8 @@ class HanoiGame: ObservableObject {
         let toRod = rodNames.firstIndex(of: move.to)!
         
         withAnimation(.easeInOut(duration: 0.8)) {
-                    _ = moveDisk(from: fromRod, to: toRod)
-                }
+            _ = moveDisk(from: fromRod, to: toRod)
+        }
         
         currentStep += 1
         
